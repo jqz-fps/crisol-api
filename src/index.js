@@ -53,11 +53,65 @@ app.get('/search', async (req, res) => {
   }
 })
 
-app.get('/product', (req, res) => {
+app.get('/product', async (req, res) => {
   const isbn = req.query.isbn
   if(!isbn) return reqError(res, 400, "No ISBN provided")
-  // TODO: fetch data from Crisol's page
-  res.send(data)
+  if(isNaN(isbn)) return reqError(res, 400, "ISBN must be a number")
+  if(isbn.length !== 13) return reqError(res, 400, "Invalid ISBN")
+  try {
+    let $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?q=${isbn}`)
+    let product_url = $('li.item.product.product-item').find('.product-item-link').attr('href')
+    if(!product_url) return reqError(res, 404, "Product not found")
+    let page = await getCheerioPage(product_url)
+    let content = page('.column.main')
+    let title = content.find('.page-title span').text().trim()
+    let image_url = content.find('#magnifier-item-0').attr('src')
+    let store_page = product_url
+    let weight = content.find('[data-th="Peso"]').text().trim()
+    let author = content.find('[data-th="Nombre del autor"]').text().trim()
+    let publisher = content.find('[data-th="Editorial"]').text().trim()
+    let height = content.find('[data-th="Alto"]').text().trim()
+    let width = content.find('[data-th="Ancho"]').text().trim()
+    let edition_year = content.find('[data-th="Año de edición"]').text().trim()
+    let format = content.find('[data-th="Formato"]').text().trim()
+    let pages = content.find('[data-th="Número de Páginas"]').text().trim()
+    let synopsis = content.find('.additional-attributes-wrapper.custom-synopsis p').text()
+    let price = content.find('span.price').text().trim().split("S/")[1].trim()
+    let has_discount = content.find('.old-price').length > 0
+    let old_price = content.find('.old-price span.price').text().trim().split("S/ ")[1] || null
+    let stores = {}
+    let index = 0
+    content.find('#disponibilidad\\.tab tbody tr').each((i, el) => {
+      let store = page(el).find('th a').text().trim()
+      let stock = page(el).find('th span').text().trim()
+      stores[index++] = {
+        store,
+        stock
+      }
+    })
+    res.send({
+      req_date: new Date().toISOString(),
+      title,
+      image_url,
+      store_page,
+      weight,
+      author,
+      publisher,
+      height,
+      width,
+      edition_year,
+      format,
+      pages,
+      isbn,
+      synopsis,
+      price,
+      has_discount,
+      old_price,
+      stores
+    })
+  } catch (error) {
+    reqError(res, 500, error.message)
+  }
 })
 
 // Middleware for non existing routes
