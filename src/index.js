@@ -5,6 +5,11 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3000
 
+const cors = require('cors')
+app.use(cors({
+  methods: ['GET']
+}))
+
 app.get('/', (req, res) => {
   // TODO: something with this route :)
   res.send({ message: "Hello World" })
