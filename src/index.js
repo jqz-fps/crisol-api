@@ -47,7 +47,7 @@ app.get('/search', async (req, res) => {
       if(index >= maxResults) break
       $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?p=${page++}&q=${query}`)
     } while ($('li.item.product.product-item').length > 0)
-    res.send(results)
+    res.send({ req_date: new Date().toISOString(), results })
   } catch (error) {
     reqError(res, 500, error.message)
   }
