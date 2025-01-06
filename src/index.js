@@ -80,11 +80,10 @@ app.get('/product', async (req, res) => {
     let has_discount = content.find('.old-price').length > 0
     let old_price = content.find('.old-price span.price').text().trim().split("S/ ")[1] || null
     let stores = {}
-    let index = 0
     content.find('#disponibilidad\\.tab tbody tr').each((i, el) => {
       let store = page(el).find('th a').text().trim()
       let stock = page(el).find('th span').text().trim()
-      stores[index++] = {
+      stores[i] = {
         store,
         stock
       }
