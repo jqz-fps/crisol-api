@@ -19,6 +19,7 @@ app.get('/search', async (req, res) => {
   const maxResults = req.query.max
   const query = req.query.q
   if(!query) return reqError(res, 400, "No query provided")
+  if(query.length < 3) return reqError(res, 400, "Query too short (min 3 characters required)")
   if(maxResults && (isNaN(maxResults) || maxResults < 1)) return reqError(res, 400, "Invalid max results")
   const results = {}
   let page = 1
