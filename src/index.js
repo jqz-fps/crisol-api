@@ -115,6 +115,37 @@ app.get('/product', async (req, res) => {
   }
 })
 
+app.get("/stores", async (req, res) => {
+  const stores = {}
+  try {
+    let $ = await getCheerioPage("https://www.crisol.com.pe/amlocator/")
+    $('.amlocator-stores-wrapper .amlocator-store-desc').each((i, el) => {
+      let details = $(el).find('.amlocator-store-information')
+      let name = details.find('.amlocator-title a').text().trim()
+      let city, zip, province, address
+      details.contents().each((i, el) => {
+        let text = $(el).text().trim()
+        if(!text.includes(":")) return
+        let [k, v] = text.split(":")
+        if(k === "Ciudad") city = v.trim()
+        else if(k === "Zip") zip = v.trim()
+        else if(k === "Provincia") province = v.trim()
+        else if(k === "Dirección") address = v.trim()
+      })
+      stores[i] = {
+        name,
+        city,
+        zip,
+        province,
+        address
+      }
+    })
+    res.send({ req_date: new Date().toISOString(), stores })
+  } catch (error) {
+    reqError(res, 500, error.message)
+  }
+})
+
 // Middleware for non existing routes
 app.use((req, res) => {
   reqError(res, 404, "Not found")
