@@ -29,6 +29,7 @@ app.get('/search', async (req, res) => {
     do {
       $('li.item.product.product-item').each((i, el) => {
         let title = $(el).find('.product-item-name a').text().trim()
+        let isbn = $(el).find('[data-role="tocart-form"]').attr('data-product-sku')
         let image_url = $(el).find('.product-item-photo img').attr('src')
         let price = $(el).find('span.price').text().trim().split("S/")[1].trim()
         let link = $(el).find('.product-item-link').attr('href')
@@ -37,6 +38,7 @@ app.get('/search', async (req, res) => {
         if(index >= maxResults) return
         results[index++] = {
           title,
+          isbn,
           image_url,
           price,
           has_discount,
@@ -45,7 +47,7 @@ app.get('/search', async (req, res) => {
         }
       })
       if(index >= maxResults) break
-      $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?p=${page++}&q=${query}`)
+      $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?p=${++page}&q=${query}`)
     } while ($('li.item.product.product-item').length > 0)
     res.send({ req_date: new Date().toISOString(), results })
   } catch (error) {
