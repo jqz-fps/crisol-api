@@ -51,7 +51,7 @@ app.get("/stores", async (req, res) => {
     reqError(res, 500, error.message)
   }
   Object.assign(stores, { req_date: new Date().toISOString() })
-  res.send({ req_date: new Date().toISOString(), stores })
+  res.send(stores)
 })
 
 // Middleware for non existing routes
