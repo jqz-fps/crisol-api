@@ -16,17 +16,21 @@ app.get('/', (req, res) => {
 })
 
 app.get('/search', async (req, res) => {
+  // Get and validate the request parameters
   const maxResults = req.query.max
   const query = req.query.q
   if(!query) return reqError(res, 400, "No query provided")
   if(query.length < 3) return reqError(res, 400, "Query too short (min 3 characters required)")
   if(maxResults && (isNaN(maxResults) || maxResults < 1)) return reqError(res, 400, "Invalid max results")
   const results = {}
-  let page = 1
-  let index = 0
+  let page = 1 // Actual page
+  let index = 0 // Index of the products
   try {
+    // Get the results page
     let $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?p=${page}&q=${query}`)
     do {
+
+      // Get all the results
       $('li.item.product.product-item').each((i, el) => {
         let title = $(el).find('.product-item-name a').text().trim()
         let isbn = $(el).find('[data-role="tocart-form"]').attr('data-product-sku')
@@ -46,9 +50,14 @@ app.get('/search', async (req, res) => {
           link
         }
       })
+
       if(index >= maxResults) break
+      // Get the next page results of the query
       $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?p=${++page}&q=${query}`)
+
+      // Do this while there are results in the page
     } while ($('li.item.product.product-item').length > 0)
+    
     res.send({ req_date: new Date().toISOString(), results })
   } catch (error) {
     reqError(res, 500, error.message)
@@ -61,11 +70,16 @@ app.get('/product', async (req, res) => {
   if(isNaN(isbn)) return reqError(res, 400, "ISBN must be a number")
   if(isbn.length !== 13) return reqError(res, 400, "Invalid ISBN")
   try {
+    // Get the results and pick the first one
     let $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?q=${isbn}`)
     let product_url = $('li.item.product.product-item').find('.product-item-link').attr('href')
     if(!product_url) return reqError(res, 404, "Product not found")
+
+    // Get the product page and search the main data
     let page = await getCheerioPage(product_url)
     let content = page('.column.main')
+
+    // Scrape the data
     let title = content.find('.page-title span').text().trim()
     let image_url = content.find('#magnifier-item-0').attr('src')
     let store_page = product_url
@@ -82,33 +96,20 @@ app.get('/product', async (req, res) => {
     let has_discount = content.find('.old-price').length > 0
     let old_price = content.find('.old-price span.price').text().trim().split("S/ ")[1] || null
     let stores = {}
+
+    // Get all the stores and stock
     content.find('#disponibilidad\\.tab tbody tr').each((i, el) => {
-      let store = page(el).find('th a').text().trim()
-      let stock = page(el).find('th span').text().trim()
       stores[i] = {
-        store,
-        stock
+        store: page(el).find('th a').text().trim(),
+        stock: page(el).find('th span').text().trim()
       }
     })
+
     res.send({
       req_date: new Date().toISOString(),
-      title,
-      image_url,
-      store_page,
-      weight,
-      author,
-      publisher,
-      height,
-      width,
-      edition_year,
-      format,
-      pages,
-      isbn,
-      synopsis,
-      price,
-      has_discount,
-      old_price,
-      stores
+      title, image_url, store_page, weight, author,
+      publisher, height, width, edition_year, format, pages,
+      isbn, synopsis, price, has_discount, old_price, stores
     })
   } catch (error) {
     reqError(res, 500, error.message)
@@ -118,7 +119,10 @@ app.get('/product', async (req, res) => {
 app.get("/stores", async (req, res) => {
   const stores = {}
   try {
+    // Get the stores page
     let $ = await getCheerioPage("https://www.crisol.com.pe/amlocator/")
+
+    // Pick the stores divs
     $('.amlocator-stores-wrapper .amlocator-store-desc').each((i, el) => {
       let details = $(el).find('.amlocator-store-information')
       let name = details.find('.amlocator-title a').text().trim()
@@ -132,14 +136,9 @@ app.get("/stores", async (req, res) => {
         else if(k === "Provincia") province = v.trim()
         else if(k === "Dirección") address = v.trim()
       })
-      stores[i] = {
-        name,
-        city,
-        zip,
-        province,
-        address
-      }
+      stores[i] = { name, city, zip, province, address }
     })
+
     res.send({ req_date: new Date().toISOString(), stores })
   } catch (error) {
     reqError(res, 500, error.message)
