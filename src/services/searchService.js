@@ -30,6 +30,10 @@ module.exports = async function searchProducts(query, maxResults) {
       let price = $(el).find('span.price').text().trim().split("S/")[1].trim()
       let link = $(el).find('.product-item-link').attr('href')
       let has_discount = $(el).find('.old-price').length > 0
+      let has_amasty = $(el).find('img.amasty-label-image').attr('src')
+      let format = 'book'
+      if(has_amasty)
+        format = has_amasty.includes('ebook') ? 'ebook' : has_amasty.includes('audiolibro') ? 'audiobook' : 'book'
       let old_price = $(el).find('.old-price').find('span.price').text().trim().split("S/ ")[1] || null
       if(index >= maxResults) return
       results[index++] = {
@@ -40,6 +44,7 @@ module.exports = async function searchProducts(query, maxResults) {
         price,
         has_discount,
         old_price,
+        format,
         link
       }
     })
