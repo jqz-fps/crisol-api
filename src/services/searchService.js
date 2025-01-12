@@ -24,6 +24,7 @@ module.exports = async function searchProducts(query, maxResults) {
     // Get all the results
     $('li.item.product.product-item').each((i, el) => {
       let title = $(el).find('.product-item-name a').text().trim()
+      let author = $(el).find('div.author').text().trim()
       let isbn = $(el).find('[data-role="tocart-form"]').attr('data-product-sku')
       let image_url = $(el).find('.product-item-photo img').attr('src')
       let price = $(el).find('span.price').text().trim().split("S/")[1].trim()
@@ -33,6 +34,7 @@ module.exports = async function searchProducts(query, maxResults) {
       if(index >= maxResults) return
       results[index++] = {
         title,
+        author,
         isbn,
         image_url,
         price,
