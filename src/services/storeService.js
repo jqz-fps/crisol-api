@@ -1,6 +1,6 @@
-const getCheerioPage = require('../utils/httpRequest')
+import getCheerioPage from '../utils/httpRequest.js'
 
-module.exports = async function getStores() {
+export default async function getStores() {
   const stores = {}
   
   // Get the stores page
