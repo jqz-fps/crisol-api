@@ -25,7 +25,7 @@ MAX_REQUESTS = 3 // Maximum number of requests allowed within the time limit, de
 
 ## Installation with Docker
 
-If you have Docker installed, you can pull the image from this [Docker Hub Repository](https://hub.docker.com/r/jqzfps/crisol-api) and run it.
+If you have Docker installed, you can pull the image from this [Docker Hub Repository](https://hub.docker.com/r/jqzfps/crisol-api) and run it with: ```docker run -d -p 3000:3000 --name crisolapi --rm jqzfps/crisolapi```
 
 ## Disclaimer
 
