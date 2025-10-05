@@ -34,6 +34,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: crisolapi.jqz.lat
 
     steps:
       - name: Deploy via SSH
