@@ -1,7 +1,7 @@
-const ServerError = require('../models/serverError')
-const getCheerioPage = require('../utils/httpRequest')
+import ServerError from '../models/serverError.js'
+import getCheerioPage from '../utils/httpRequest.js'
 
-module.exports = async function getProduct(isbn) {
+export default async function getProduct(isbn) {
   if(!isbn) throw new ServerError("No ISBN provided", 400)
   if(isNaN(isbn)) throw new ServerError("ISBN must be a number", 400)
   if(isbn.length !== 13) throw new ServerError("Invalid ISBN", 400)

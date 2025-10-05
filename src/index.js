@@ -1,15 +1,15 @@
-const reqError = require('./utils/errorHandler')
-const ServerError = require('./models/serverError')
+import reqError from './utils/errorHandler.js'
+import ServerError from './models/serverError.js'
 
-const express = require('express')
+import express from 'express'
 const app = express()
 const PORT = process.env.PORT || 3000
 
-const searchProducts = require('./services/searchService')
-const getProduct = require('./services/productService')
-const getStores = require('./services/storeService')
+import searchProducts from './services/searchService.js'
+import getProduct from './services/productService.js'
+import getStores from './services/storeService.js'
 
-const cors = require('cors')
+import cors from 'cors'
 app.use(cors({
   methods: ['GET']
 }))

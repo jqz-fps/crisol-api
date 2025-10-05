@@ -1,7 +1,7 @@
-const ServerError = require('../models/serverError')
-const getCheerioPage = require('../utils/httpRequest')
+import ServerError from '../models/serverError.js'
+import getCheerioPage from '../utils/httpRequest.js'
 
-module.exports = async function searchProducts(query, maxResults) {
+export default async function searchProducts(query, maxResults) {
   // Validate the request parameters
   if(!query) throw new ServerError("No query provided", 400)
   if(query.length < 3) throw new ServerError("Query too short (min 3 characters required)", 400)
