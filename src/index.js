@@ -5,6 +5,16 @@ import express from 'express'
 const app = express()
 const PORT = process.env.PORT || 3000
 
+import rateLimit from 'express-rate-limit'
+const limiter = rateLimit({
+  windowMs: (process.env.MINUTES_LIMIT || 15) * 60 * 1000,
+  max: process.env.MAX_REQUESTS || 100,
+  message: `Too many requests from this IP, please try again after ${process.env.MINUTES_LIMIT || 15} minutes`,
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+app.use(limiter)
+
 import searchProducts from './services/searchService.js'
 import getProduct from './services/productService.js'
 import getStores from './services/storeService.js'
