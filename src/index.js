@@ -30,9 +30,10 @@ app.get('/', (req, res) => {
 })
 
 app.get('/search', async (req, res) => {
+  const reqUrl = req.protocol + '://' + req.get('host')
   let results = {}
   try {
-    results = await searchProducts(req.query.q, req.query.max)
+    results = await searchProducts(req.query.q, req.query.max, reqUrl)
   } catch (error) {
     if(error instanceof ServerError) return reqError(res, error.statusCode, error.message)
     reqError(res, 500, error.message)
