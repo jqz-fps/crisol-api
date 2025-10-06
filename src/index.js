@@ -17,7 +17,6 @@ app.use(limiter)
 
 import searchProducts from './services/searchService.js'
 import getProduct from './services/productService.js'
-import getStores from './services/storeService.js'
 
 import cors from 'cors'
 app.use(cors({
@@ -34,35 +33,23 @@ app.get('/search', async (req, res) => {
   let results = {}
   try {
     results = await searchProducts(req.query.q, req.query.max, reqUrl)
+    res.send({ req_date: new Date().toISOString(), results })
   } catch (error) {
     if(error instanceof ServerError) return reqError(res, error.statusCode, error.message)
     reqError(res, 500, error.message)
   }
-  res.send({ req_date: new Date().toISOString(), results })
 })
 
 app.get('/product', async (req, res) => {
   let productData = {}
   try {
     productData = await getProduct(req.query.isbn)
+    Object.assign(productData, { req_date: new Date().toISOString() })
+    res.send(productData)
   } catch (error) {
     if(error instanceof ServerError) return reqError(res, error.statusCode, error.message)
     reqError(res, 500, error.message)
   }
-  Object.assign(productData, { req_date: new Date().toISOString() })
-  res.send(productData)
-})
-
-app.get("/stores", async (req, res) => {
-  let stores = {}
-  try {
-    stores = await getStores()
-  } catch (error) {
-    if(error instanceof ServerError) return reqError(res, error.statusCode, error.message)
-    reqError(res, 500, error.message)
-  }
-  Object.assign(stores, { req_date: new Date().toISOString() })
-  res.send(stores)
 })
 
 // Middleware for non existing routes
