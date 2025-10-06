@@ -1,5 +1,6 @@
 import ServerError from '../models/serverError.js'
 import getCheerioPage from '../utils/httpRequest.js'
+import axios from 'axios'
 
 export default async function getProduct(isbn) {
   if(!isbn) throw new ServerError("No ISBN provided", 400)
@@ -17,7 +18,7 @@ export default async function getProduct(isbn) {
 
   // Scrape the data
   let title = content.find('.page-title span').text().trim()
-  let image_url = content.find('#magnifier-item-0').attr('src')
+  let image_url = content.find('.gallery-placeholder__image').attr('src')
   let store_page = product_url
   let weight = content.find('[data-th="Peso"]').text().trim()
   let author = content.find('[data-th="Nombre del autor"]').text().trim()
@@ -30,14 +31,31 @@ export default async function getProduct(isbn) {
   let synopsis = content.find('.additional-attributes-wrapper.custom-synopsis p').text()
   let price = content.find('span.price').text().trim().split("S/")[1].trim()
   let has_discount = content.find('.old-price').length > 0
-  let old_price = content.find('.old-price span.price').text().trim().split("S/ ")[1] || null
-  let stores = {}
+  let old_price = content.find('.old-price').find('span.price').text().trim().replace(/S\/\s*/, "").trim() || null
 
   // Get all the stores and stock
-  content.find('#disponibilidad\\.tab tbody tr').each((i, el) => {
-    stores[i] = {
-      store: page(el).find('th a').text().trim(),
-      stock: page(el).find('th span').text().trim()
+
+  const storesData = await axios.get(
+    `https://www.crisol.com.pe/stores/service/stores/?skus[]=${isbn}`,
+    {
+      headers: {
+        'x-requested-with': 'XMLHttpRequest',
+      }
+    }
+  )
+  console.log(storesData.data)
+
+  const rawStores = storesData.data?.stores || {}
+  const stores = Object.values(rawStores).map(store => {
+    const stockInfo = store.stock && store.stock[0]
+    return {
+      store: store.name,
+      city: store.city,
+      district: store.district,
+      phone: store.phone,
+      address: store.street,
+      stock: stockInfo.quantity ?? 0,
+      description: store.description
     }
   })
 
