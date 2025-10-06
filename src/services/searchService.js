@@ -1,7 +1,7 @@
 import ServerError from '../models/serverError.js'
 import getCheerioPage from '../utils/httpRequest.js'
 
-export default async function searchProducts(query, maxResults) {
+export default async function searchProducts(query, maxResults, request_url) {
   // Validate the request parameters
   if(!query) throw new ServerError("No query provided", 400)
   if(query.length < 3) throw new ServerError("Query too short (min 3 characters required)", 400)
@@ -27,14 +27,16 @@ export default async function searchProducts(query, maxResults) {
       let author = $(el).find('div.author').text().trim()
       let isbn = $(el).find('[data-role="tocart-form"]').attr('data-product-sku')
       let image_url = $(el).find('.product-item-photo img').attr('src')
+      // Price must be splited because sometimes it has a discount and tag's class changes to .special-price
       let price = $(el).find('span.price').text().trim().split("S/")[1].trim()
-      let link = $(el).find('.product-item-link').attr('href')
+      let store_page = $(el).find('.product-item-link').attr('href')
       let has_discount = $(el).find('.old-price').length > 0
       let has_amasty = $(el).find('img.amasty-label-image').attr('src')
       let format = 'book'
       if(has_amasty)
         format = has_amasty.includes('ebook') ? 'ebook' : has_amasty.includes('audiolibro') ? 'audiobook' : 'book'
-      let old_price = $(el).find('.old-price').find('span.price').text().trim().split("S/ ")[1] || null
+      let old_price = $(el).find('.old-price').find('span.price').text().trim().replace(/S\/\s*/, "").trim() || null
+      let detail_url = request_url + "/product?isbn=" + isbn
       if(index >= maxResults) return
       results[index++] = {
         title,
@@ -45,7 +47,8 @@ export default async function searchProducts(query, maxResults) {
         has_discount,
         old_price,
         format,
-        link
+        detail_url,
+        store_page
       }
     })
     if(index >= maxResults) break

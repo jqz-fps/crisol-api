@@ -15,10 +15,10 @@ This is an unnofficial API for the Crisol online shop. It is a simple Node.js ap
 3. Create a `.env` file in the root directory and add the following variables:
 
 ```
-PORT = 3000 // Port to run the application on, default is 3000
+PORT = 3000 # Port to run the application on, default is 3000
 
-MINUTES_LIMIT = 1 // Number of minutes to limit requests to the API, default is 15
-MAX_REQUESTS = 3 // Maximum number of requests allowed within the time limit, default is 100
+MINUTES_LIMIT = 1 # Number of minutes to limit requests to the API, default is 15
+MAX_REQUESTS = 3 # Maximum number of requests allowed within the time limit, default is 100
 ```
 
 4. Run the application using or `npm run prod`
