@@ -10,7 +10,7 @@ export default async function getProduct(isbn) {
   // Get the results and pick the first one
   let $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?q=${isbn}`)
   let product_url = $('li.item.product.product-item').find('.product-item-link').attr('href')
-  if(!product_url) throw new ServerError("Product not found", 404);
+  if(!product_url) throw new ServerError("Product not found", 404)
 
   // Get the product page and search the main data
   let page = await getCheerioPage(product_url)
