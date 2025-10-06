@@ -27,7 +27,8 @@ export default async function searchProducts(query, maxResults, request_url) {
       let author = $(el).find('div.author').text().trim()
       let isbn = $(el).find('[data-role="tocart-form"]').attr('data-product-sku')
       let image_url = $(el).find('.product-item-photo img').attr('src')
-      let price = $(el).find(".special-price").find('span.price').text().trim().replace(/S\/\s*/, "").trim()
+      // Price must be splited because sometimes it has a discount and tag's class changes to .special-price
+      let price = $(el).find('span.price').text().trim().split("S/")[1].trim()
       let store_page = $(el).find('.product-item-link').attr('href')
       let has_discount = $(el).find('.old-price').length > 0
       let has_amasty = $(el).find('img.amasty-label-image').attr('src')
