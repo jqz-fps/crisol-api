@@ -28,7 +28,7 @@ export default async function searchProducts(query, maxResults, request_url) {
       let isbn = $(el).find('[data-role="tocart-form"]').attr('data-product-sku')
       let image_url = $(el).find('.product-item-photo img').attr('src')
       let price = $(el).find(".special-price").find('span.price').text().trim().replace(/S\/\s*/, "").trim()
-      let store_link = $(el).find('.product-item-link').attr('href')
+      let store_page = $(el).find('.product-item-link').attr('href')
       let has_discount = $(el).find('.old-price').length > 0
       let has_amasty = $(el).find('img.amasty-label-image').attr('src')
       let format = 'book'
@@ -47,7 +47,7 @@ export default async function searchProducts(query, maxResults, request_url) {
         old_price,
         format,
         detail_url,
-        store_link
+        store_page
       }
     })
     if(index >= maxResults) break
