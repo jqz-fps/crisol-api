@@ -43,7 +43,6 @@ export default async function getProduct(isbn) {
       }
     }
   )
-  console.log(storesData.data)
 
   const rawStores = storesData.data?.stores || {}
   const stores = Object.values(rawStores).map(store => {
