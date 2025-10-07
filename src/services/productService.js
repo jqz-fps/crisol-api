@@ -28,7 +28,7 @@ export const getProducByIsbn = async (isbn) => {
   let edition_year = content.find('[data-th="Año de edición"]').text().trim()
   let format = content.find('[data-th="Formato"]').text().trim()
   let pages = content.find('[data-th="Número de Páginas"]').text().trim()
-  let synopsis = content.find('.additional-attributes-wrapper.custom-synopsis p').text()
+  let review = content.find('#product-view-sinopsis > div > div').text().trim()
   let price = content.find('span.price').text().trim().split("S/")[1].trim()
   let has_discount = content.find('.old-price').length > 0
   let old_price = content.find('.old-price').find('span.price').text().trim().replace(/S\/\s*/, "").trim() || null
@@ -61,7 +61,7 @@ export const getProducByIsbn = async (isbn) => {
   return {
     title, image_url, store_page, weight, author,
     publisher, height, width, edition_year, format, pages,
-    isbn, synopsis, price, has_discount, old_price, stores
+    isbn, review, price, has_discount, old_price, stores
   }
 }
 
