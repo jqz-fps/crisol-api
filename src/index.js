@@ -10,9 +10,16 @@ const PORT = process.env.PORT || 3000
 const limiter = rateLimit({
   windowMs: (process.env.MINUTES_LIMIT || 15) * 60 * 1000,
   max: process.env.MAX_REQUESTS || 100,
-  message: `Too many requests from this IP, please try again after ${process.env.MINUTES_LIMIT || 15} minutes`,
   standardHeaders: true,
   legacyHeaders: false,
+
+  handler: (req, res, next, options) => {
+    reqError(
+      res,
+      options.statusCode || 429,
+      `Too many requests from this IP, please try again after ${process.env.MINUTES_LIMIT || 15} minutes`
+    )
+  }
 })
 app.use(limiter)
 
