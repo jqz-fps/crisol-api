@@ -1,8 +1,10 @@
 import express from 'express'
-import productController from '../controllers/productController.js'
+import { searchProduct, searchProducts } from '../controllers/productController.js'
 
 const router = express.Router()
 
-router.get("/", productController.searchProduct)
+router.get("/", searchProducts)
+
+router.get("/:isbn", searchProduct)
 
 export default router

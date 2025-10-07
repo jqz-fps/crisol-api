@@ -2,7 +2,6 @@ import reqError from './utils/errorHandler.js'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import cors from 'cors'
-import search from './routes/searchRoutes.js'
 import product from './routes/productRoutes.js'
 
 const app = express()
@@ -21,8 +20,7 @@ app.use(cors({
   methods: ['GET']
 }))
 
-app.use('/search', search)
-app.use('/product', product)
+app.use('/products', product)
 
 app.get('/', (req, res) => {
   // TODO: something with this route :)
