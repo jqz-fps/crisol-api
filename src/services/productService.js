@@ -119,7 +119,7 @@ export const getProducts = async (query, maxResults, request_url) => {
     // Get the next page results of the query
     $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?p=${++page}&product_list_limit=${productsListLimit}&q=${query}`)
     // Do this while there are results in the page
-  } while ($('li.item.product.product-item').length > 0)
+  } while (index < productsListLimit && $('li.item.product.product-item').length > 0)
 
   return results
 }
