@@ -3,6 +3,7 @@ import express from 'express'
 import rateLimit from 'express-rate-limit'
 import cors from 'cors'
 import product from './routes/productRoutes.js'
+import store from './routes/storeRoutes.js'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 
@@ -45,6 +46,8 @@ const swaggerDocs = swaggerJSDoc(swaggerOptions)
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 app.use('/products', product)
+
+app.use('/stores', store)
 
 app.get('/', (req, res) => {
   res.redirect('/docs')
