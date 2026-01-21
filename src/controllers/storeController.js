@@ -1,11 +1,22 @@
 import reqError from '../utils/errorHandler.js'
 import ServerError from '../models/serverError.js'
-import { getStores } from '../services/storeService.js'
+import { getStores, getStoresByProduct } from '../services/storeService.js'
 
 export const searchStores = async (req, res) => {
   let results = {}
   try {
     results = await getStores()
+    res.send({ req_date: new Date().toISOString(), results })
+  } catch (error) {
+    if(error instanceof ServerError) return reqError(res, error.statusCode, error.message)
+    reqError(res, 500, error.message)
+  }
+}
+
+export const searchStoresByProduct = async (req, res) => {
+  let results = {}
+  try {
+    results = await getStoresByProduct(req.params.isbn)
     res.send({ req_date: new Date().toISOString(), results })
   } catch (error) {
     if(error instanceof ServerError) return reqError(res, error.statusCode, error.message)
