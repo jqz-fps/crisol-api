@@ -1,6 +1,6 @@
 import ServerError from '../models/serverError.js'
 import getCheerioPage from '../utils/httpRequest.js'
-import axios from 'axios'
+import { getStoresByProduct } from './storeService.js'
 
 export const getProducByIsbn = async (isbn) => {
   if(!isbn) throw new ServerError("No ISBN provided", 400)
@@ -33,35 +33,13 @@ export const getProducByIsbn = async (isbn) => {
   let has_discount = content.find('.old-price').length > 0
   let old_price = content.find('.old-price').find('span.price').text().trim().replace(/S\/\s*/, "").trim() || null
 
-  // Get all the stores and stock
-
-  const storesData = await axios.get(
-    `https://www.crisol.com.pe/stores/service/stores/?skus[]=${isbn}`,
-    {
-      headers: {
-        'x-requested-with': 'XMLHttpRequest',
-      }
-    }
-  )
-
-  const rawStores = storesData.data?.stores || {}
-  const stores = Object.values(rawStores).map(store => {
-    const stockInfo = store.stock && store.stock[0]
-    return {
-      store: store.name,
-      city: store.city,
-      district: store.district,
-      phone: store.phone,
-      address: store.street,
-      stock: stockInfo.quantity ?? 0,
-      description: store.description
-    }
-  })
+  const stores = await getStoresByProduct(isbn)
 
   return {
-    title, image_url, store_page, weight, author,
-    publisher, height, width, edition_year, format, pages,
-    isbn, review, price, has_discount, old_price, stores
+    title: title, image_url: image_url, store_page: store_page, weight: weight, author: author,
+    publisher: publisher, height: height, width: width, edition_year: edition_year, 
+    format: format, pages: pages, isbn: isbn, review: review, price: price, has_discount: has_discount,
+    old_price: old_price, stores: stores
   }
 }
 
@@ -103,23 +81,16 @@ export const getProducts = async (query, maxResults, request_url) => {
       let detail_url = request_url + "/products/" + isbn
       if(index >= maxResults) return
       results[index++] = {
-        title,
-        author,
-        isbn,
-        image_url,
-        price,
-        has_discount,
-        old_price,
-        format,
-        detail_url,
-        store_page
+        title: title, author: author, isbn: isbn,
+        image_url: image_url, price: price, has_discount: has_discount,
+        old_price: old_price, format: format, detail_url: detail_url, store_page: store_page
       }
     })
     if(index >= maxResults) break
     // Get the next page results of the query
     $ = await getCheerioPage(`https://www.crisol.com.pe/catalogsearch/result/index/?p=${++page}&product_list_limit=${productsListLimit}&q=${query}`)
     // Do this while there are results in the page
-  } while ($('li.item.product.product-item').length > 0)
+  } while (index < productsListLimit && $('li.item.product.product-item').length > 0)
 
   return results
 }

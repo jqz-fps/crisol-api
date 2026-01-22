@@ -1,29 +1,16 @@
 import express from 'express'
-import { searchProduct, searchProducts } from '../controllers/productController.js'
+import { searchStores, searchStoresByProduct } from '../controllers/storeController.js'
 
 const router = express.Router()
 
 /**
  * @swagger
- * /products:
+ * /stores:
  *   get:
- *     summary: Search for products
- *     description: Search for products by query
+ *     summary: Search for stores
+ *     description: Search for physical stores in Peru
  *     tags:
- *       - Product
- *     parameters:
- *       - name: q
- *         in: query
- *         description: Query to search for
- *         required: true
- *         schema:
- *           type: string
- *       - name: max
- *         in: query
- *         description: Maximum number of results to return
- *         required: false
- *         schema:
- *           type: integer
+ *       - Store
  *     responses:
  *       200:
  *         description: Successful response
@@ -32,16 +19,16 @@ const router = express.Router()
  *       429:
  *         description: Too many requests
  */
-router.get("/", searchProducts)
+router.get("/", searchStores)
 
 /**
  * @swagger
- * /products/{isbn}:
+ * /stores/{isbn}:
  *   get:
- *     summary: Search for an specific product
- *     description: Search for products by ISBN
+ *     summary: Search for stores by product
+ *     description: Search for physical stores for a specific product
  *     tags:
- *       - Product
+ *       - Store
  *     parameters:
  *       - name: isbn
  *         in: path
@@ -59,6 +46,6 @@ router.get("/", searchProducts)
  *       429:
  *         description: Too many requests
  */
-router.get("/:isbn", searchProduct)
+router.get("/:isbn", searchStoresByProduct)
 
 export default router

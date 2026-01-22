@@ -1,6 +1,6 @@
 {
   "name": "crisol-api",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "type": "module",
   "description": "",
   "main": "index.js",
@@ -18,7 +18,9 @@
     "cheerio": "1.0.0",
     "cors": "2.8.5",
     "express": "4.21.2",
-    "express-rate-limit": "8.1.0"
+    "express-rate-limit": "8.1.0",
+    "swagger-jsdoc": "6.2.8",
+    "swagger-ui-express": "5.0.1"
   },
   "devDependencies": {
     "cross-env": "10.1.0",
