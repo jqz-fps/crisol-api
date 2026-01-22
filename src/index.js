@@ -36,7 +36,7 @@ const swaggerOptions = {
     openapi: '3.0.0',
     info: {
       title: 'Crisol API',
-      version: '4.0.0',
+      version: '4.0.1',
       description: "Unnofficial API for the Crisol online shop. A Node.js application that uses the Crisol website to scrape data from Crisol's website.",
     }
   },
