@@ -80,16 +80,9 @@ export const getProducts = async (query, maxResults, request_url) => {
       let detail_url = request_url + "/products/" + isbn
       if(index >= maxResults) return
       results[index++] = {
-        title,
-        author,
-        isbn,
-        image_url,
-        price,
-        has_discount,
-        old_price,
-        format,
-        detail_url,
-        store_page
+        title, author, isbn,
+        image_url, price, has_discount,
+        old_price, format, detail_url, store_page
       }
     })
     if(index >= maxResults) break
