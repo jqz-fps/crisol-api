@@ -16,6 +16,8 @@ const router = express.Router()
  *         description: Successful response
  *       400:
  *         description: Bad request, not enough or invalid parameters
+ *       429:
+ *         description: Too many requests
  */
 router.get("/", searchStores)
 
@@ -41,6 +43,8 @@ router.get("/", searchStores)
  *         description: Bad request, not enough or invalid parameters
  *       404:
  *         description: Not found
+ *       429:
+ *         description: Too many requests
  */
 router.get("/:isbn", searchStoresByProduct)
 
