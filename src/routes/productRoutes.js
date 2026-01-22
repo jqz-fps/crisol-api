@@ -27,16 +27,8 @@ const router = express.Router()
  *     responses:
  *       200:
  *         description: Successful response
- *         content:
- *           application/json:
- *             schema:
- *               type: array
  *       400:
  *         description: Bad request, not enough or invalid parameters
- *         content:
- *           application/json:
- *             schema:
- *               type: array
  */
 router.get("/", searchProducts)
 
@@ -58,22 +50,10 @@ router.get("/", searchProducts)
  *     responses:
  *       200:
  *         description: Successful response
- *         content:
- *           application/json:
- *             schema:
- *               type: array
  *       400:
  *         description: Bad request, not enough or invalid parameters
- *         content:
- *           application/json:
- *             schema:
- *               type: array
  *       404:
  *         description: Not found
- *         content:
- *           application/json:
- *             schema:
- *               type: array
  */
 router.get("/:isbn", searchProduct)
 
