@@ -36,9 +36,10 @@ export const getProducByIsbn = async (isbn) => {
   const stores = await getStoresByProduct(isbn)
 
   return {
-    title, image_url, store_page, weight, author,
-    publisher, height, width, edition_year, format, pages,
-    isbn, review, price, has_discount, old_price, stores
+    title: title, image_url: image_url, store_page: store_page, weight: weight, author: author,
+    publisher: publisher, height: height, width: width, edition_year: edition_year, 
+    format: format, pages: pages, isbn: isbn, review: review, price: price, has_discount: has_discount,
+    old_price: old_price, stores: stores
   }
 }
 
@@ -80,9 +81,9 @@ export const getProducts = async (query, maxResults, request_url) => {
       let detail_url = request_url + "/products/" + isbn
       if(index >= maxResults) return
       results[index++] = {
-        title, author, isbn,
-        image_url, price, has_discount,
-        old_price, format, detail_url, store_page
+        title: title, author: author, isbn: isbn,
+        image_url: image_url, price: price, has_discount: has_discount,
+        old_price: old_price, format: format, detail_url: detail_url, store_page: store_page
       }
     })
     if(index >= maxResults) break
