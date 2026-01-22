@@ -15,6 +15,7 @@ const limiter = rateLimit({
   max: process.env.MAX_REQUESTS || 100,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req, res) => req.path.includes("/docs"),
 
   handler: (req, res, next, options) => {
     reqError(
