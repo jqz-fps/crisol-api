@@ -24,7 +24,7 @@ router.get("/", searchStores)
  * /stores/{isbn}:
  *   get:
  *     summary: Search for stores by product
- *     description: Search for physical stores in Peru by ISBN
+ *     description: Search for physical stores for a specific product
  *     tags:
  *       - Store
  *     parameters:
