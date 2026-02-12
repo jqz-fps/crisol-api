@@ -8,7 +8,6 @@ import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 
 const app = express()
-const PORT = process.env.PORT || 3000
 
 const limiter = rateLimit({
   windowMs: (process.env.MINUTES_LIMIT || 15) * 60 * 1000,
@@ -25,13 +24,14 @@ const limiter = rateLimit({
     )
   }
 })
+
 app.use(limiter)
 
 app.use(cors({
   methods: ['GET']
 }))
 
-const swaggerOptions = {
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc({
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
@@ -41,10 +41,7 @@ const swaggerOptions = {
     }
   },
   apis: ['./src/routes/*.js'],
-}
-
-const swaggerDocs = swaggerJSDoc(swaggerOptions)
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+})))
 
 app.use('/products', product)
 
@@ -59,6 +56,4 @@ app.use((req, res) => {
   reqError(res, 404, "Not found")
 })
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`)
-})
+export default app
