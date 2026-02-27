@@ -68,7 +68,7 @@ export const getProducts = async (query, maxResults, request_url) => {
       let title = $(el).find('.product-item-name a').text().trim()
       let author = $(el).find('div.author').text().trim()
       let isbn = $(el).find('[data-role="tocart-form"]').attr('data-product-sku')
-      let image_url = $(el).find('.product-item-photo img').attr('src')
+      let image_url = $(el).find('.product-image-photo').attr('src')
       // Price must be splited because sometimes it has a discount and tag's class changes to .special-price
       let price = $(el).find('span.price').text().trim().split("S/")[1].trim()
       let store_page = $(el).find('.product-item-link').attr('href')
